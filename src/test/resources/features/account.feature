@@ -1,14 +1,17 @@
-Feature: Account Creation and Login
-  As a new user
-  I want to create an account and login
-  So that I can access my account on the website
-
-  Scenario: Successful account creation and login
-    Given I navigate to the home page
-    When I click on "Create an Account" link
-    And I fill in the account creation form with valid details
-    And I submit the account creation form
+Feature: Account Management
+  Scenario: Successful user registration and login
+    Given I navigate to the Magento homepage
+    When I click on the Create Account link
+    And I fill the registration form with valid details
+    And I submit the registration form
     Then I should see my account dashboard
-    When I logout from the application
-    And I login with the newly created credentials
-    Then I should see my account dashboard again
+    When I logout from my account
+    And I click on the Sign In link
+    And I login with the created credentials
+    Then I should be logged in successfully
+
+  Scenario: Prevent duplicate registration
+    Given I navigate to the Magento homepage
+    When I click on the Create Account link
+    And I attempt to register with an existing email
+    Then I should see an error message "There is already an account"
