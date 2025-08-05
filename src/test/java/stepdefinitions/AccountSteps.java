@@ -5,7 +5,6 @@ import core.Reporter;
 import io.cucumber.java.en.*;
 import pages.*;
 import utils.DataGenerator;
-
 import static core.Reporter.logStep;
 
 public class AccountSteps {
@@ -16,7 +15,7 @@ public class AccountSteps {
     private String generatedEmail;
     private final String TEST_PASSWORD = "Test@1234";
 
-    // ================== Account Creation ================== //
+    // ================== Common Steps ================== //
 
     @Given("I navigate to the Magento homepage")
     public void navigateToHomepage() {
@@ -25,11 +24,19 @@ public class AccountSteps {
         logStep("Navigated to Magento homepage", Status.PASS);
     }
 
-    @When("I click on the Create Account link")
+    @When("I click on the Create Account Link")
     public void clickCreateAccountLink() {
         createAccountPage = homePage.clickCreateAccount();
         logStep("Clicked Create Account link", Status.PASS);
     }
+
+    @When("I click on the Sign In Link")
+    public void clickSignInLink() {
+        loginPage = homePage.clickSignIn();
+        logStep("Clicked Sign In link", Status.PASS);
+    }
+
+    // ================== Registration Flow ================== //
 
     @When("I fill the registration form with valid details")
     public void fillRegistrationForm() {
@@ -53,53 +60,47 @@ public class AccountSteps {
     public void verifyAccountDashboard() {
         String pageTitle = myAccountPage.getPageTitle();
         if (pageTitle.contains("My Account")) {
-            logStep("Account created successfully. Dashboard title: " + pageTitle, Status.PASS);
+            logStep("Account dashboard verified. Title: " + pageTitle, Status.PASS);
         } else {
-            logStep("Failed to verify dashboard. Actual title: " + pageTitle, Status.FAIL);
-            throw new AssertionError("Dashboard verification failed");
+            logStep("Dashboard verification failed. Actual title: " + pageTitle, Status.FAIL);
+            throw new AssertionError("Dashboard not displayed");
         }
     }
 
-    // ================== logStepin Flow ================== //
+    // ================== Login Flow ================== //
 
-    @When("I logStepout from my account")
-    public void logStepoutFromAccount() {
+    @When("I logout from my account")
+    public void logoutFromAccount() {
         homePage = myAccountPage.logout();
-        logStep("logStepged out successfully", Status.PASS);
+        logStep("Logged out successfully", Status.PASS);
     }
 
-    @When("I click on the Sign In link")
-    public void clickSignInLink() {
-        loginPage = homePage.clickSignIn();
-        logStep("Clicked Sign In link", Status.PASS);
-    }
-
-    @When("I logStepin with the created credentials")
-    public void logStepinWithCreatedCredentials() {
+    @When("I login with the created credentials")
+    public void loginWithCreatedCredentials() {
         loginPage.enterEmail(generatedEmail);
         loginPage.enterPassword(TEST_PASSWORD);
         myAccountPage = loginPage.clickSignIn();
-        logStep("logStepged in with created credentials", Status.PASS);
+        logStep("Logged in with created credentials", Status.PASS);
     }
 
-    @Then("I should be logStepged in successfully")
-    public void verifySuccessfullogStepin() {
+    @Then("I should be logged in successfully")
+    public void verifySuccessfulLogin() {
         if (myAccountPage.isLoggedIn()) {
-            logStep("logStepin verified - User is logStepged in", Status.PASS);
+            logStep("Login verification passed - User is logged in", Status.PASS);
         } else {
-            logStep("logStepin verification failed", Status.FAIL);
-            throw new AssertionError("logStepin verification failed");
+            logStep("Login verification failed", Status.FAIL);
+            throw new AssertionError("User not logged in");
         }
     }
 
-    // ================== Negative Tests ================== //
+    // ================== Negative Testing ================== //
 
     @When("I attempt to register with an existing email")
     public void registerWithExistingEmail() {
         createAccountPage.fillRegistrationForm(
                 "Existing",
                 "User",
-                "existing@example.com", // Known existing email
+                "existing_user@example.com", // Pre-existing test email
                 TEST_PASSWORD
         );
         createAccountPage.submitRegistration();
@@ -110,10 +111,10 @@ public class AccountSteps {
     public void verifyErrorMessage(String expectedMessage) {
         String actualMessage = loginPage.getErrorMessage();
         if (actualMessage.contains(expectedMessage)) {
-            logStep("Correct error message displayed: " + actualMessage, Status.PASS);
+            logStep("Error message verified: " + actualMessage, Status.PASS);
         } else {
             logStep("Expected error: '" + expectedMessage + "' but got: '" + actualMessage + "'", Status.FAIL);
-            throw new AssertionError("Error message verification failed");
+            throw new AssertionError("Error message mismatch");
         }
     }
 }
