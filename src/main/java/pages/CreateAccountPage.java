@@ -33,4 +33,24 @@ public final class CreateAccountPage {
     public boolean isSuccessMessageDisplayed() {
         return actions.isVisible(successMessage);
     }
+
+    public void enterFirstName(String firstName) {
+        actions.type(this.firstName, firstName);
+    }
+
+    public void enterLastName(String lastName) {
+        actions.type(this.lastName, lastName);
+    }
+
+    public void enterEmail(String email) {
+        actions.type(this.email, email);
+    }
+
+    public void enterPassword(String password) {
+        actions.type(this.password, password);
+    }
+
+    public void enterConfirmPassword(String password) {
+        actions.type(this.confirmPassword, password);
+    }
 }

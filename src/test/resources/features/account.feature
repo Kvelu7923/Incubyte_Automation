@@ -8,7 +8,7 @@ Feature: Account Management
   Background:
     Given I navigate to the Magento homepage
 
-  @positive
+  @positive @Login
   Scenario: Successful user registration and login
     When I click on the Create Account Link
     And I fill the registration form with valid details

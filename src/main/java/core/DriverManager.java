@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class DriverManager {
     private static final ConcurrentHashMap<Long, WebDriver> driverMap = new ConcurrentHashMap<>();
 
-    private DriverManager() {} // Prevent instantiation
+    private DriverManager() {}
 
     public static WebDriver getDriver() {
         long threadId = Thread.currentThread().getId();

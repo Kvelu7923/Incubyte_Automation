@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class SeleniumActions {
     private final WebDriver driver;
@@ -16,7 +17,7 @@ public final class SeleniumActions {
 
     public SeleniumActions() {
         this.driver = DriverManager.getDriver();
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         this.actions = new Actions(driver);
         this.js = (JavascriptExecutor) driver;
     }
@@ -51,6 +52,51 @@ public final class SeleniumActions {
     public String getText(By locator) {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).getText();
     }
+
+
+    public List<String> getTextFromElements(By locator) {
+        List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
+        return elements.stream()
+                .map(WebElement::getText)
+                .collect(Collectors.toList());
+    }
+
+    public void closeAdIfPresent(By closeBtnLocator) {
+        try {
+            // Wait for the close button of the ad popup if it appears within 5s
+            WebElement closeBtn = wait
+                    .withTimeout(Duration.ofSeconds(10))
+                    .until(ExpectedConditions.elementToBeClickable(closeBtnLocator));
+            closeBtn.click();
+            System.out.println("Ad closed successfully.");
+        } catch (TimeoutException e) {
+            System.out.println("No ad popup appeared within timeout.");
+        } catch (Exception e) {
+            System.out.println("Error while closing ad: " + e.getMessage());
+        }
+    }
+
+
+    public boolean waitUntilVisible(By locator, int seconds) {
+        try {
+            WebDriverWait customWait = new WebDriverWait(driver, Duration.ofSeconds(seconds));
+            customWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
+    public boolean waitUntilClickable(By locator, int seconds) {
+        try {
+            WebDriverWait customWait = new WebDriverWait(driver, Duration.ofSeconds(seconds));
+            customWait.until(ExpectedConditions.elementToBeClickable(locator));
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
 
     public String getText(WebElement element) {
         return wait.until(ExpectedConditions.visibilityOf(element)).getText();

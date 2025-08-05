@@ -21,12 +21,11 @@ public final class MyAccountPage {
         return actions.getText(contactInfo);
     }
 
+    public boolean isLoggedIn() {
+        return actions.isVisible(logoutLink);
+    }
     public HomePage logout() {
         actions.click(logoutLink);
         return new HomePage();
-    }
-
-    public boolean isLoggedIn() {
-        return actions.isVisible(logoutLink);
     }
 }
