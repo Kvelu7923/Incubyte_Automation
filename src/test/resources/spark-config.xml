@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extentreports>
+    <configuration>
+        <!-- report theme -->
+        <theme>standard</theme>
+
+        <!-- document encoding -->
+        <encoding>UTF-8</encoding>
+
+        <!-- protocol for script and stylesheets -->
+        <protocol>https</protocol>
+
+        <!-- title of the document -->
+        <documentTitle>Incubyte Automation Report</documentTitle>
+
+        <!-- report name -->
+        <reportName>Test Execution Report</reportName>
+
+        <!-- timestamp format -->
+        <timeStampFormat>MMM dd, yyyy HH:mm:ss</timeStampFormat>
+
+        <!-- custom javascript -->
+        <scripts>
+            <![CDATA[
+                $(document).ready(function() {
+                    $('.logo-container').html('<img src="https://www.incubyte.co/images/logo.svg" class="logo"/>');
+                });
+            ]]>
+        </scripts>
+    </configuration>
+</extentreports>
