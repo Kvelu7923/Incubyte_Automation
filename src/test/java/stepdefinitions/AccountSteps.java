@@ -91,11 +91,17 @@ public class AccountSteps {
         logStep("Entered confirm password", Status.PASS);
     }
 
-    @When("I submit the registration form")
-    public void submitRegistrationForm() {
-        myAccountPage = createAccountPage.submitRegistration();
-        logStep("Submitted registration form", Status.PASS);
+ @When("I submit the registration form")
+public void submitRegistrationForm() {
+    myAccountPage = createAccountPage.submitRegistration();
+
+    // Initialize loginPage if registration fails
+    if (myAccountPage == null) {
+        loginPage = new LoginPage();
     }
+
+    logStep("Submitted registration form", Status.PASS);
+}
 
     @Then("I should see my account dashboard")
     public void verifyAccountDashboard() {
@@ -149,21 +155,27 @@ public class AccountSteps {
         createAccountPage.fillRegistrationForm(
                 "Existing",
                 "User",
-                "existing_user@example.com", // Pre-existing test email
+                "eugenio.upton@yahoo.com", // Pre-existing test email
                 TEST_PASSWORD
         );
         createAccountPage.submitRegistration();
+        loginPage = new LoginPage();
         logStep("Attempted registration with existing email", Status.INFO);
     }
 
-    @Then("I should see an error message {string}")
-    public void verifyErrorMessage(String expectedMessage) {
-        String actualMessage = loginPage.getErrorMessage();
-        if (actualMessage.contains(expectedMessage)) {
-            logStep("Error message verified: " + actualMessage, Status.PASS);
-        } else {
-            logStep("Expected error: '" + expectedMessage + "' but got: '" + actualMessage + "'", Status.FAIL);
-            throw new AssertionError("Error message mismatch");
-        }
+  @Then("I should see an error message {string}")
+public void verifyErrorMessage(String expectedMessage) {
+    // Initialize loginPage if null
+    if (loginPage == null) {
+        loginPage = new LoginPage();
     }
+
+    String actualMessage = loginPage.getErrorMessage();
+    if (actualMessage.contains(expectedMessage)) {
+        logStep("Error message verified: " + actualMessage, Status.PASS);
+    } else {
+        logStep("Expected error: '" + expectedMessage + "' but got: '" + actualMessage + "'", Status.FAIL);
+        throw new AssertionError("Error message mismatch");
+    }
+}
 }

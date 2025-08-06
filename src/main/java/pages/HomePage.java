@@ -21,8 +21,6 @@ public final class HomePage {
 
     public void navigateToHomePage() {
         actions.navigateTo("https://magento.softwaretestingboard.com/");
- // close if ad appears immediately
-
     }
 
     public CreateAccountPage clickCreateAccount() {

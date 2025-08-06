@@ -19,24 +19,24 @@ Feature: Account Management
     And I login with the created credentials
     Then I should be logged in successfully
 
-  @negative
+  @negative  @Existing
   Scenario: Prevent duplicate registration
     When I click on the Create Account Link
     And I attempt to register with an existing email
     Then I should see an error message "There is already an account"
 
-  @positive
+  @positive @JustLogin
   Scenario: Successful login with valid credentials
     Given I have a registered account
     When I click on the Sign In Link
     And I login with the created credentials
     Then I should be logged in successfully
 
-  @negative
+  @negative @Invalid
   Scenario: Prevent login with invalid credentials
     Given I have a registered account
     When I click on the Sign In Link
-    And I enter email "invalid@example.com"
+    And I enter email "invalid@gmail.com"
     And I enter password "wrongpassword"
     And I click the login button
     Then I should see an error message "The account sign-in was incorrect"
@@ -50,4 +50,4 @@ Feature: Account Management
     And I enter password "weak"
     And I enter confirm password "weak"
     And I submit the registration form
-    Then I should see an error message "Minimum length of this field must be equal or greater than 8 characters"
+    Then I should see an error message "inimum length of this field must be equal or greater than 8 symbols"

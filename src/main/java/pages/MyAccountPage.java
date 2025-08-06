@@ -8,6 +8,8 @@ public final class MyAccountPage {
     private final By pageTitle = By.cssSelector(".base");
     private final By contactInfo = By.cssSelector(".box-information");
     private final By logoutLink = By.linkText("Sign Out");
+    private final By welcome = By.xpath("(//span[@class='customer-name'])[1]");
+
 
     public MyAccountPage() {
         this.actions = new SeleniumActions();
@@ -22,9 +24,10 @@ public final class MyAccountPage {
     }
 
     public boolean isLoggedIn() {
-        return actions.isVisible(logoutLink);
+        return actions.isVisible(welcome);
     }
     public HomePage logout() {
+        actions.click(welcome);
         actions.click(logoutLink);
         return new HomePage();
     }

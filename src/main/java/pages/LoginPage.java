@@ -13,14 +13,14 @@ public final class LoginPage {
     private final By emailField = By.id("email");
     private final By passwordField = By.id("pass");
     private final By signInBtn = By.id("send2");
-    private final By errorMessage = By.cssSelector(".message-error");
+    private final By errorMessage = By.xpath("//div[@for='password']");
     private final By ads = By.cssSelector("google_vignette");
     private final By adCloseBtn = By.cssSelector("div[role='dialog'] button[aria-label='Close ad']"); // ✅ added at top
 
     public LoginPage() {
         this.actions = new SeleniumActions();
     }
-    
+
 
     public void enterEmail(String email) {
         actions.type(emailField, email);
