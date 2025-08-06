@@ -29,23 +29,23 @@ public final class DriverManager {
             options.addArguments("--disable-notifications");
             options.addArguments("--disable-ads");
             options.addArguments("--disable-popup-blocking");
-            options.addArguments("--disable-notifications");
             options.addArguments("--disable-infobars");
             options.addArguments("--disable-extensions-except");
             options.addArguments("--disable-plugins");
+
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("profile.default_content_setting_values.notifications", 2);
             prefs.put("profile.default_content_settings.popups", 0);
             options.setExperimentalOption("prefs", prefs);
 
-
-            WebDriver driver = new ChromeDriver(options);
-            driverMap.put(threadId, new ChromeDriver(options));
+            WebDriver driver = new ChromeDriver(options);  // create ONE instance
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-            new WebDriverWait(driver, Duration.ofSeconds(10)).until(
-                    (ExpectedCondition<Boolean>) wd ->
-                            ((JavascriptExecutor) wd).executeScript("return document.readyState").equals("complete")
-            );
+//            new WebDriverWait(driver, Duration.ofSeconds(10)).until(
+//                    (ExpectedCondition<Boolean>) wd ->
+//                            ((JavascriptExecutor) wd).executeScript("return document.readyState").equals("complete")
+//            );
+
+            driverMap.put(threadId, driver); // store that same instance
         }
         return driverMap.get(threadId);
     }

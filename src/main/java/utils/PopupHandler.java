@@ -2,67 +2,49 @@ package utils;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
-import java.time.Duration;
-import java.util.List;
+import java.util.Random;
 
 public class PopupHandler {
-
-    private WebDriver driver;
-    private WebDriverWait wait;
+    private final WebDriver driver;
+    private final JavascriptExecutor jsExecutor;
+    private final Actions actions;
+    private final Random random;
 
     public PopupHandler(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        this.jsExecutor = (JavascriptExecutor) driver;
+        this.actions = new Actions(driver);
+        this.random = new Random();
     }
 
-    public void closeAdPopupIfPresent() {
+    public void tryToClosePopupWithRandomClicks() {
         try {
-            Thread.sleep(10000);
-            // Find all iframes on the page
-            List<WebElement> iframes = driver.findElements(By.tagName("iframe"));
+            System.out.println("🔍 Trying to close popup with random clicks...");
 
-            for (WebElement iframe : iframes) {
+            // Ensure the browser is maximized to get correct screen dimensions
+            driver.manage().window().maximize();
+
+            // Get the full page dimensions
+            int width = ((Number) jsExecutor.executeScript("return window.innerWidth")).intValue();
+            int height = ((Number) jsExecutor.executeScript("return window.innerHeight")).intValue();
+
+            for (int i = 0; i < 5; i++) {
+                int x = random.nextInt(width - 100) + 50;  // Avoid edges
+                int y = random.nextInt(height - 150) + 75;
+
                 try {
-                    driver.switchTo().frame(iframe);
-
-                    // Common ad close button selectors
-                    List<By> closeButtonSelectors = List.of(
-                            By.cssSelector("button[aria-label='Close ad']"),
-                            By.cssSelector("div[aria-label='Close']"),
-                            By.cssSelector(".close-button"),
-                            By.cssSelector(".ad_close"),
-                            By.cssSelector("#dismiss-button"),
-                            By.cssSelector("button[title='Close']")
-                    );
-
-                    for (By selector : closeButtonSelectors) {
-                        List<WebElement> closeButtons = driver.findElements(selector);
-                        if (!closeButtons.isEmpty()) {
-                            WebElement closeButton = closeButtons.get(0);
-                            wait.until(ExpectedConditions.elementToBeClickable(closeButton));
-                            closeButton.click();
-                            System.out.println("Ad popup closed.");
-                            driver.switchTo().defaultContent();
-                            return;
-                        }
-                    }
-
-                } catch (NoSuchElementException | ElementNotInteractableException ignored) {
-                    // Ignore and move on to next iframe
-                } finally {
-                    driver.switchTo().defaultContent();
+                    actions.moveByOffset(x, y).click().perform();
+                    System.out.println("Clicked at: (" + x + ", " + y + ")");
+                    Thread.sleep(500);
+                    actions.moveByOffset(-x, -y).perform();  // Reset mouse position
+                } catch (MoveTargetOutOfBoundsException e) {
+                    System.out.println(" Click skipped: target out of bounds at (" + x + ", " + y + ")");
                 }
             }
-
-            // ✅ Fallback: press ESC if no popup was found
-            System.out.println("Trying ESC key fallback...");
-            new Actions(driver).sendKeys(Keys.ESCAPE).perform();
-
         } catch (Exception e) {
-            System.out.println("Popup not found or couldn't be closed: " + e.getMessage());
+            System.out.println("Error during popup close clicks: " + e.getMessage());
         }
     }
 }

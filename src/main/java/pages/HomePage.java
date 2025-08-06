@@ -21,13 +21,14 @@ public final class HomePage {
 
     public void navigateToHomePage() {
         actions.navigateTo("https://magento.softwaretestingboard.com/");
+
     }
 
     public CreateAccountPage clickCreateAccount() {
-//        actions.handleAdIfPresent(adpresent, 15);
         actions.click(createAccountLink);
+        System.out.println("Create account link Clicked");
         PopupHandler popupHandler = new PopupHandler(DriverManager.getDriver());
-        popupHandler.closeAdPopupIfPresent();
+        popupHandler.tryToClosePopupWithRandomClicks();
         return new CreateAccountPage();
     }
 

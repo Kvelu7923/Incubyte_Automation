@@ -18,7 +18,7 @@ public class AccountSteps {
     // ================== Common Steps ================== //
 
     @Given("I navigate to the Magento homepage")
-    public void navigateToHomepage() {
+    public void navigateToHomepage() throws InterruptedException {
         homePage = new HomePage();
         homePage.navigateToHomePage();
         logStep("Navigated to Magento homepage", Status.PASS);
@@ -164,7 +164,7 @@ public void submitRegistrationForm() {
     }
 
   @Then("I should see an error message {string}")
-public void verifyErrorMessage(String expectedMessage) {
+public void verifyErrorMessage(String expectedMessage) throws InterruptedException {
     // Initialize loginPage if null
     if (loginPage == null) {
         loginPage = new LoginPage();

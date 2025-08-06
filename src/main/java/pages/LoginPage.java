@@ -39,7 +39,8 @@ public final class LoginPage {
         return actions.isVisible(errorMessage);
     }
 
-    public String getErrorMessage() {
+    public String getErrorMessage() throws InterruptedException {
+        Thread.sleep(4000);
         return actions.getText(errorMessage);
     }
     public void clickLoginButton() {
