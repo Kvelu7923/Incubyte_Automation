@@ -33,10 +33,10 @@ public class Hooks {
         } else {
             Reporter.logStep("Scenario PASSED: " + scenario.getName(), Status.PASS);
         }
-     //   DriverManager.quitDriver();
+        DriverManager.quitDriver();
     }
 
-    @AfterAll
+    @AfterAll()
     public static void afterAll() {
         System.out.println("[HOOKS] Test run completed.");
         Reporter.flush(); // Flush report after all tests

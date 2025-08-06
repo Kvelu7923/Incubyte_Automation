@@ -1,13 +1,12 @@
 package core;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.awt.*;
+import java.awt.Dimension;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +19,9 @@ public final class DriverManager {
 
     public static WebDriver getDriver() {
         if (driverThreadLocal.get() == null) {
+
+
+
             WebDriverManager.chromedriver().setup();
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--start-maximized");
@@ -29,6 +31,7 @@ public final class DriverManager {
             options.addArguments("--disable-infobars");
             options.addArguments("--disable-extensions-except");
             options.addArguments("--disable-plugins");
+//            options.addArguments("--force-device-scale-factor=0.9");
 
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("profile.default_content_setting_values.notifications", 2);

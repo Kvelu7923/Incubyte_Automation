@@ -2,6 +2,7 @@ package stepdefinitions;
 
 import com.aventstack.extentreports.Status;
 import core.Reporter;
+import io.cucumber.java.PendingException;
 import io.cucumber.java.en.*;
 import pages.*;
 import utils.DataGenerator;
@@ -31,7 +32,8 @@ public class AccountSteps {
     }
 
     @When("I click on the Sign In Link")
-    public void clickSignInLink() {
+    public void clickSignInLink() throws InterruptedException {
+        Thread.sleep(5000);
         loginPage = homePage.clickSignIn();
         logStep("Clicked Sign In link", Status.PASS);
     }
@@ -169,7 +171,6 @@ public void verifyErrorMessage(String expectedMessage) throws InterruptedExcepti
     if (loginPage == null) {
         loginPage = new LoginPage();
     }
-
     String actualMessage = loginPage.getError();
 
     if (actualMessage.contains(expectedMessage)) {
@@ -179,4 +180,31 @@ public void verifyErrorMessage(String expectedMessage) throws InterruptedExcepti
         throw new AssertionError("Error message mismatch");
     }
 }
+
+
+    @Then("I should see an message {string}")
+    public void verifyMessage(String expectedMessage) throws InterruptedException {
+        // Initialize loginPage if null
+        if (loginPage == null) {
+            loginPage = new LoginPage();
+        }
+        String actualMessage = loginPage.getErrorMessage();
+
+        if (actualMessage.contains(expectedMessage)) {
+            logStep("Error message verified: " + actualMessage, Status.PASS);
+        } else {
+            logStep("Expected error: '" + expectedMessage + "' but got: '" + actualMessage + "'", Status.FAIL);
+            throw new AssertionError("Error message mismatch");
+        }
+    }
+
+    @And("I enter the Email as {string}")
+    public void iEnterTheEmailAs(String email) {
+        loginPage.enterEmail(email);
+    }
+
+    @And("I enter the Password as {string}")
+    public void iEnterThePasswordAs(String password) {
+    loginPage.enterPassword(password);
+    }
 }

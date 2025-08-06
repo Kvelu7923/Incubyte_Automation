@@ -23,7 +23,7 @@ Feature: Account Management
   Scenario: Prevent duplicate registration
     When I click on the Create Account Link
     And I attempt to register with an existing email
-    Then I should see an error message "There is already an account"
+    Then I should see an message "There is already an account"
 
   @positive @JustLogin
   Scenario: Successful login with valid credentials
@@ -36,10 +36,10 @@ Feature: Account Management
   Scenario: Prevent login with invalid credentials
     Given I have a registered account
     When I click on the Sign In Link
-    And I enter email "invalid@gmail.com"
-    And I enter password "wrongpassword"
+    And I enter the Email as "invalid@gmail.com"
+    And I enter the Password as "wrongpassword"
     And I click the login button
-    Then I should see an error message "The account sign-in was incorrect"
+    Then I should see an message "The account sign-in was incorrect"
 
   @security
   Scenario: Validate password strength requirements

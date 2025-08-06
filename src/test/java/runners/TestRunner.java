@@ -7,7 +7,7 @@ import org.testng.annotations.DataProvider;
 @CucumberOptions(
         features = "src/test/resources/features",
         glue = {"stepdefinitions", "core", "hooks"},
-//        tags = "@Invalid",
+//        tags = "@security",
         plugin = {
                 "pretty",
                 "html:target/cucumber-reports/cucumber.html",
@@ -15,8 +15,6 @@ import org.testng.annotations.DataProvider;
         }
 )
 public final class TestRunner extends AbstractTestNGCucumberTests {
-
-
         @Override
         @DataProvider(parallel = false)
         public Object[][] scenarios() {
