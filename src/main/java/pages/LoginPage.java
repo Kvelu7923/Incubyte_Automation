@@ -20,12 +20,9 @@ public final class LoginPage {
     public LoginPage() {
         this.actions = new SeleniumActions();
     }
-
-
-
+    
 
     public void enterEmail(String email) {
-        actions.closeAdIfPresent(By.cssSelector("div[role='dialog'] button[aria-label='Close ad']"));
         actions.type(emailField, email);
     }
 

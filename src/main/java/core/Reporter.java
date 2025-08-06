@@ -39,7 +39,7 @@ public final class Reporter {
             extent.attachReporter(spark);
 
             extent.setSystemInfo("Organization", "Incubyte");
-            extent.setSystemInfo("Engineer", System.getProperty("user.name"));
+            extent.setSystemInfo("Engineer", "Kathirvel Arumugam");
         }
     }
 

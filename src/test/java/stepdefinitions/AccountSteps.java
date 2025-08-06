@@ -53,8 +53,8 @@ public class AccountSteps {
     @When("I fill the registration form with valid details")
     public void fillRegistrationForm() {
         generatedEmail = DataGenerator.randomEmail();
-        createAccountPage.enterFirstName("Test");
-        createAccountPage.enterLastName("User");
+        createAccountPage.enterFirstName(DataGenerator.randomFirstName());
+        createAccountPage.enterLastName(DataGenerator.randomLastName());
         createAccountPage.enterEmail(generatedEmail);
         createAccountPage.enterPassword(TEST_PASSWORD);
         createAccountPage.enterConfirmPassword(TEST_PASSWORD);

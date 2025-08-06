@@ -5,6 +5,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +44,15 @@ public final class SeleniumActions {
         element.sendKeys(text);
     }
 
+    public void pressEscapeKey() {
+        try {
+            new Actions(driver).sendKeys(Keys.ESCAPE).perform();
+        } catch (Exception e) {
+            System.out.println("ESC key press failed: " + e.getMessage());
+        }
+    }
+
+
     public void type(WebElement element, String text) {
         wait.until(ExpectedConditions.visibilityOf(element));
         element.clear();
@@ -61,18 +71,16 @@ public final class SeleniumActions {
                 .collect(Collectors.toList());
     }
 
-    public void closeAdIfPresent(By closeBtnLocator) {
+    public void handleAdIfPresent(By adCloseButtonSelector, int timeoutInSeconds) {
         try {
-            // Wait for the close button of the ad popup if it appears within 5s
-            WebElement closeBtn = wait
-                    .withTimeout(Duration.ofSeconds(10))
-                    .until(ExpectedConditions.elementToBeClickable(closeBtnLocator));
+            WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
+            WebElement closeBtn = shortWait.until(ExpectedConditions.elementToBeClickable(adCloseButtonSelector));
             closeBtn.click();
             System.out.println("Ad closed successfully.");
         } catch (TimeoutException e) {
-            System.out.println("No ad popup appeared within timeout.");
+            System.out.println("No ad popup appeared.");
         } catch (Exception e) {
-            System.out.println("Error while closing ad: " + e.getMessage());
+            System.out.println("Error closing ad popup: " + e.getMessage());
         }
     }
 

@@ -12,6 +12,7 @@ public final class CreateAccountPage {
     private final By confirmPassword = By.id("password-confirmation");
     private final By createAccountBtn = By.cssSelector("button[title='Create an Account']");
     private final By successMessage = By.cssSelector(".message-success");
+    private final By adpresent = By.cssSelector("div[role='dialog'] button[aria-label='Close ad']");
 
     public CreateAccountPage() {
         this.actions = new SeleniumActions();
@@ -35,6 +36,7 @@ public final class CreateAccountPage {
     }
 
     public void enterFirstName(String firstName) {
+        actions.handleAdIfPresent(adpresent, 10);
         actions.type(this.firstName, firstName);
     }
 
