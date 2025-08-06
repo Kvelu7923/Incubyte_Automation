@@ -170,7 +170,8 @@ public void verifyErrorMessage(String expectedMessage) throws InterruptedExcepti
         loginPage = new LoginPage();
     }
 
-    String actualMessage = loginPage.getErrorMessage();
+    String actualMessage = loginPage.getError();
+
     if (actualMessage.contains(expectedMessage)) {
         logStep("Error message verified: " + actualMessage, Status.PASS);
     } else {

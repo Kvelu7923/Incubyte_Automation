@@ -1,9 +1,6 @@
 package core;
 
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.MediaEntityBuilder;
-import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.*;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -13,17 +10,16 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class Reporter {
+
     private static ExtentReports extent;
-    private static final Map<Long, ExtentTest> testMap = new HashMap<>();
-    private static final Map<Long, String> testNameMap = new HashMap<>();
+    private static ThreadLocal<ExtentTest> testThread = new ThreadLocal<>();
     private static String reportDirPath;
 
     private Reporter() {}
 
+    // Initialize report once before all tests
     public static synchronized void init() {
         if (extent == null) {
             String timestamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
@@ -32,7 +28,7 @@ public final class Reporter {
             reportDir.mkdirs();
 
             String reportPath = reportDirPath + "/ExtentReport.html";
-            System.out.println("Creating report at: " + new File(reportPath).getAbsolutePath());
+            System.out.println("📄 Creating report at: " + new File(reportPath).getAbsolutePath());
 
             ExtentSparkReporter spark = new ExtentSparkReporter(reportPath);
             extent = new ExtentReports();
@@ -43,51 +39,42 @@ public final class Reporter {
         }
     }
 
-    public static synchronized void createTest(String testName) {
-        long threadId = Thread.currentThread().getId();
-        if (extent != null) {
-            testMap.put(threadId, extent.createTest(testName));
-            testNameMap.put(threadId, testName);
-        }
+    // Create a test for each scenario
+    public static void createTest(String testName) {
+        ExtentTest test = extent.createTest(testName);
+        testThread.set(test);
     }
 
-    public static synchronized void logStep(String message, Status status) {
-        long threadId = Thread.currentThread().getId();
-        ExtentTest test = testMap.get(threadId);
-
-        if (test == null) {
-            createTest(testNameMap.getOrDefault(threadId, "Automation Test"));
-            test = testMap.get(threadId);
-        }
-
+    // Log a step with screenshot
+    public static void logStep(String message, Status status) {
+        ExtentTest test = testThread.get();
         if (test != null) {
             try {
                 WebDriver driver = DriverManager.getDriver();
-                String screenshot = captureScreenshotAsBase64(driver);
-                test.log(status, message,
-                        MediaEntityBuilder.createScreenCaptureFromBase64String(screenshot).build());
+                String base64Screenshot = captureScreenshotAsBase64(driver);
+                test.log(status, message, MediaEntityBuilder.createScreenCaptureFromBase64String(base64Screenshot).build());
             } catch (Exception e) {
-                test.log(status, message + " (Screenshot failed: " + e.getMessage() + ")");
+                test.log(status, message + " (⚠ Screenshot failed: " + e.getMessage() + ")");
             }
         }
     }
 
+    // Capture screenshot as base64
     private static String captureScreenshotAsBase64(WebDriver driver) {
         return Base64.getEncoder().encodeToString(
                 ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)
         );
     }
 
+    // Flush report at the end
     public static synchronized void flush() {
         if (extent != null) {
-            System.out.println("Flushing extent report...");
+            System.out.println("✅ Flushing extent report...");
             extent.flush();
-        } else {
-            System.out.println("Extent was null at flush");
         }
     }
 
-    // Optional: Getter for report folder path if needed elsewhere
+    // Get report path if needed elsewhere
     public static String getReportDirPath() {
         return reportDirPath;
     }

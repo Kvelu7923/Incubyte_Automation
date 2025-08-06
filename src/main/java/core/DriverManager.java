@@ -7,22 +7,19 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class DriverManager {
-    private static final ConcurrentHashMap<Long, WebDriver> driverMap = new ConcurrentHashMap<>();
+
+    private static final ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
 
     private DriverManager() {}
 
     public static WebDriver getDriver() {
-        long threadId = Thread.currentThread().getId();
-        if (!driverMap.containsKey(threadId)) {
+        if (driverThreadLocal.get() == null) {
             WebDriverManager.chromedriver().setup();
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--start-maximized");
@@ -38,24 +35,19 @@ public final class DriverManager {
             prefs.put("profile.default_content_settings.popups", 0);
             options.setExperimentalOption("prefs", prefs);
 
-            WebDriver driver = new ChromeDriver(options);  // create ONE instance
+            WebDriver driver = new ChromeDriver(options);
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-//            new WebDriverWait(driver, Duration.ofSeconds(10)).until(
-//                    (ExpectedCondition<Boolean>) wd ->
-//                            ((JavascriptExecutor) wd).executeScript("return document.readyState").equals("complete")
-//            );
 
-            driverMap.put(threadId, driver); // store that same instance
+            driverThreadLocal.set(driver);
         }
-        return driverMap.get(threadId);
+        return driverThreadLocal.get();
     }
 
     public static void quitDriver() {
-        long threadId = Thread.currentThread().getId();
-        WebDriver driver = driverMap.get(threadId);
+        WebDriver driver = driverThreadLocal.get();
         if (driver != null) {
             driver.quit();
-            driverMap.remove(threadId);
+            driverThreadLocal.remove();
         }
     }
 

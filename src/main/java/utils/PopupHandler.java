@@ -30,7 +30,7 @@ public class PopupHandler {
             int width = ((Number) jsExecutor.executeScript("return window.innerWidth")).intValue();
             int height = ((Number) jsExecutor.executeScript("return window.innerHeight")).intValue();
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 3; i++) {
                 int x = random.nextInt(width - 100) + 50;  // Avoid edges
                 int y = random.nextInt(height - 150) + 75;
 

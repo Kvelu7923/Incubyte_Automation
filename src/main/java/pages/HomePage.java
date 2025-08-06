@@ -10,7 +10,7 @@ public final class HomePage {
     private PopupHandler popupHandler;
 
     private final By createAccountLink = By.linkText("Create an Account");
-    private final By signInLink = By.linkText("Sign In");
+    private final By signInLink = By.xpath("(//a[contains(text(),'Sign In')])[1]");
     private final By welcomeMessage = By.cssSelector(".welcome-msg");
     private final By adpresent = By.cssSelector("div[role='dialog'] button[aria-label='Close ad']");
 

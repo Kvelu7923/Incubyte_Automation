@@ -13,7 +13,8 @@ public final class LoginPage {
     private final By emailField = By.id("email");
     private final By passwordField = By.id("pass");
     private final By signInBtn = By.id("send2");
-    private final By errorMessage = By.xpath("//div[@for='password']");
+    private final By errorMessage = By.cssSelector("div.message-error");
+    private final By message = By.xpath("//div[@for='password']");
     private final By ads = By.cssSelector("google_vignette");
     private final By adCloseBtn = By.cssSelector("div[role='dialog'] button[aria-label='Close ad']"); // ✅ added at top
 
@@ -43,6 +44,12 @@ public final class LoginPage {
         Thread.sleep(4000);
         return actions.getText(errorMessage);
     }
+
+    public String getError() throws InterruptedException {
+        Thread.sleep(4000);
+        return actions.getText(message);
+    }
+
     public void clickLoginButton() {
         actions.click(signInBtn);
     }
